@@ -1,0 +1,92 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Solution {
+
+	/**
+	 * 
+	 * 문제 설명: 
+	 * N종류의 동전이 있고 동전의 가치는 서로 다르다
+	 * 각 동전은 개수 제한 없이 사용할 수 있다.
+	 * 동전을 적절히 사용하여 합이 정확히 K가 되도록 만들려고 한다.
+	 * 사용하는 동전 개수의 최솟값.
+	 * 어떤 방법으로도 합을 K로 만들 수 없으면 -1 출력.
+	 * 
+	 * 입력:
+	 * 첫 줄에 테스트 케이스의 개수 T(1~50)
+	 * 
+	 * 첫 번째 줄에 동전의 종류 수 N(1~10), 만들어야하는 금액 K(1~10000)
+	 * 두 번째 줄에 N개의 동전 가치가 공백으로 구분
+	 * 
+	 * 출력:
+	 * 동전 가치의 합이 K가 될 때 동전의 개수 최소값, 달성 불가능하면 -1 출력
+	 * 
+	 * 풀이방법:
+	 * T 입력
+	 * st로 N, K 받기
+	 * int[N] arr = 동전의 가치 배열 -> sort로 오름차순 정렬 한 번 해주기
+	 * int[K+1] dp = 동전 최소 개수 배열 / int idx = 0; // arr의 인덱스 
+	 * 
+	 * dp[1] = 1원을 만들 수 있는 동전의 개수
+	 * 
+	*/
+	
+	static int N;
+	static int K;
+	static int[] arr;
+	static int[] dp;
+	
+
+	public static void main(String[] args) throws Exception {
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		
+		int T = Integer.parseInt(br.readLine());
+		
+		for (int t = 1; t <= T; t++) {
+			
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			K = Integer.parseInt(st.nextToken());
+			
+			arr = new int[N];
+			dp = new int[K+1];
+			st = new StringTokenizer(br.readLine());
+			
+			for (int i = 0; i < N; i++) {
+				 arr[i] = Integer.parseInt(st.nextToken());
+			}
+			
+			Arrays.sort(arr);// 동전 가치 오름차순 정렬
+			
+			for (int i = 1; i <= K; i++) {
+				dp[i] = 10050; // 추후 오버플로우 방지를 위해서 dp[i]값을 MAX_VALUE가 아닌 적당한 값으로만 둠
+			}
+			
+			dp[0] = 0;
+			
+			for (int i = 0; i < N; i++) {
+				for (int j = arr[i]; j <= K; j++) {
+					
+					dp[j] = Math.min(dp[j], dp[j - arr[i]] + 1);
+				}
+			}
+			
+			int answer = (dp[K] > 10000) ? -1 : dp[K];
+			
+			sb.append("#").append(t).append(" ").append(answer).append("\n");
+			
+	        }
+	 
+	        System.out.println(sb);
+	    }
+	
+	
+
+	
+}
+
+
