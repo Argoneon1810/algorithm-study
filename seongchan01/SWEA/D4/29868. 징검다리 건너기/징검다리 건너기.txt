@@ -1,0 +1,42 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+/**
+ * [문제 해석]
+ * 1) N번째 돌에 도착할 때, 마지막에 1칸 이동하는 경우의 수 - a(n)
+ * 2) N번째 돌에 도착할 때, 마지막에 2칸 이동하는 경우의 수 - b(n)
+ * 
+ *  a(n) = f(n-1)
+ *  b(n) = f(n-2)
+ *  
+ *  f(n) = f(n-1) + f(n-2)
+ *
+ */
+
+public class Solution { // D4. 징검다리 건너기
+
+	public static void main(String[] args) throws Exception {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+
+		int T = Integer.parseInt(br.readLine());
+
+		for (int tc = 1; tc <= T; tc++) {
+			int N = Integer.parseInt(br.readLine());
+
+			int[] dp = new int[N + 1];
+
+			dp[0] = 1;
+			dp[1] = 1;
+
+			for (int i = 2; i <= N; i++) {
+				dp[i] = dp[i - 1] + dp[i - 2];
+			}
+
+			sb.append("#").append(tc).append(" ").append(dp[N]).append("\n");
+		}
+
+		System.out.println(sb);
+	}
+}
