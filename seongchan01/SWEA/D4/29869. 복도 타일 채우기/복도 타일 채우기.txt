@@ -1,0 +1,44 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+/**
+ * [문제 해석]
+ * 1) N인 직사각형 모양의 복도 타일 채울 때, 마지막 1열을 세로 타일: a(n)
+ * 2) N인 직사각형 모양의 복도 타일 채울 때, 마지막 2열을 가로 타일: b(n)
+ * 3) N인 직사각형 모양의 복도 타일 채울 때, 마지막 2열을 정사각형 타일: c(n)
+ * 
+ * a(n) = f(n-1)
+ * b(n) = f(n-2)
+ * c(n) = f(n-2)
+ * 
+ * f(n) = f(n-1) + 2*f(n-2)
+ *
+ */
+
+public class Solution { // D4. 복도 타일 채우기
+
+	public static void main(String[] args) throws Exception {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+
+		int T = Integer.parseInt(br.readLine());
+
+		for (int tc = 1; tc <= T; tc++) {
+			int N = Integer.parseInt(br.readLine());
+
+			int[] dp = new int[N + 1];
+
+			dp[0] = 1;
+			dp[1] = 1;
+
+			for (int i = 2; i <= N; i++) {
+				dp[i] = dp[i - 1] + 2 * dp[i - 2];
+			}
+
+			sb.append("#").append(tc).append(" ").append(dp[N]).append("\n");
+		}
+
+		System.out.println(sb);
+	}
+}
