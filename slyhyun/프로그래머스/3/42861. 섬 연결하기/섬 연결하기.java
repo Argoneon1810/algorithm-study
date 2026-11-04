@@ -1,47 +1,76 @@
+import java.io.*;
 import java.util.*;
 
 class Solution {
-    private int[] parent;
-
-    public int solution(int n, int[][] costs) {
-        int answer = 0;
-
-        Arrays.sort(costs, (a, b) -> Integer.compare(a[2], b[2]));
-
-        parent = new int[n];
-        for (int i = 0; i < n; i++) {
-            parent[i] = i;
+    static List<Node>[] adjList;
+    
+    class Node {
+        int v, weight;
+        public Node(int v, int weight) {
+            this.v = v;
+            this.weight = weight;
         }
-
-        int edges = 0;
-
+    }
+    
+    public int solution(int n, int[][] costs) {
+        adjList = new List[n+1];
+        
+        for (int i = 0; i <= n; i++) {
+            adjList[i] = new ArrayList<>();
+        }
+        
         for (int[] cost : costs) {
-            if (edges == n - 1) break;
-
             int a = cost[0];
             int b = cost[1];
-            int bridge = cost[2];
-
-            if (find(a) != find(b)) {
-                union(a, b);
-                answer += bridge;
-                edges++;
-            }
+            int c = cost[2];
+            
+            adjList[a].add(new Node(b, c));
+            adjList[b].add(new Node(a, c));
         }
-
+        
+        int answer = dijkstra(n);
         return answer;
     }
-
-    private int find(int x) {
-        if (parent[x] == x) return x;
-        return parent[x] = find(parent[x]);
-    }
-
-    private void union(int x, int y) {
-        int rootX = find(x);
-        int rootY = find(y);
-        if (rootX != rootY) {
-            parent[rootY] = rootX;
+    
+    class State {
+        int v, dist;
+        public State(int v, int dist) {
+            this.v = v;
+            this.dist = dist;
         }
+    }
+    
+    private int dijkstra(int n) {
+        PriorityQueue<State> pq = new PriorityQueue<>((a,b)->Integer.compare(a.dist, b.dist)); 
+        boolean[] fixed = new boolean[n+1];
+        
+        pq.offer(new State(0, 0));
+        
+        int cnt = 0;
+        int ans = 0;
+        
+        while (!pq.isEmpty()) {
+            State cur = pq.poll();
+            int v = cur.v;
+            
+            if (fixed[v]) continue;
+            
+            fixed[v] = true;
+            ans += cur.dist;
+            cnt++;
+            
+            if (cnt == n) {
+                break;
+            }
+            
+            for (Node to: adjList[v]) {
+                if (!fixed[to.v]) {
+                    pq.offer(new State(to.v, to.weight));
+                }
+            }
+        }
+        
+        return ans;
+        
     }
 }
