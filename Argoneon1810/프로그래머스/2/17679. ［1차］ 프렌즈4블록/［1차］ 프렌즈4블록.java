@@ -1,22 +1,25 @@
 class Solution {
     public int solution(int m, int n, String[] board) {
-        int answer = 0;
-        char[][] cboard = new char[board.length][];
-        int[][] toClear = new int[board.length][board[0].length()];
-        int t = 0;
-        for(String s : board)
-            cboard[t++] = s.toCharArray();
-        boolean anyKill = false;
+        char[][] cboard = toCharNestedArray(board);
+        int[][] toClear = new int[cboard.length][cboard[0].length];
         int step = 0;
-        int testFor = 2;
+        int answer = 0;
+        boolean anyKill = false;
         do {
             anyKill = scanKillable(cboard, toClear, m, n, ++step);
             if(!anyKill) break;
-            int killed = doKill(cboard, toClear, step, m, n);
-            answer += killed;
+            answer += doKill(cboard, toClear, step, m, n);
             applyGravity(cboard, m, n);
         } while(anyKill);
         return answer;
+    }
+    
+    char[][] toCharNestedArray(String[] board) {
+        char[][] cboard = new char[board.length][];
+        int t = 0;
+        for(String s : board)
+            cboard[t++] = s.toCharArray();
+        return cboard;
     }
     
     boolean scanKillable(char[][] cboard, int[][] toClear, int m, int n, int step) {
@@ -66,10 +69,10 @@ class Solution {
     
     void applyGravity(char[][] cboard, int m, int n) {
         for(int x=0; x<n; ++x)
-            applyGravityColumn(cboard, m, n, x);
+            applyGravityPerColumn(cboard, m, n, x);
     }
     
-    void applyGravityColumn(char[][] cboard, int m, int n, int x) {
+    void applyGravityPerColumn(char[][] cboard, int m, int n, int x) {
         int toGrab = m-2;
         int toFill = m-1;
         while(toGrab > 0) {
